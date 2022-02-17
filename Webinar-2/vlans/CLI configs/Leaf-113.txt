@@ -1,0 +1,80 @@
+
+vlan 101
+  name Production-Segment-100101
+  vn-segment 100101
+
+vlan 102
+  name Production-Segment-100102
+  vn-segment 100102
+
+vlan 103
+  name Production-Segment-100103
+  vn-segment 100103
+
+vlan 104
+  name Production-Segment-100104
+  vn-segment 100104
+
+vlan 105
+  name Production-Segment-100105
+  vn-segment 100105
+
+vlan 106
+  name Production-Segment-100106
+  vn-segment 100106
+
+vlan 107
+  name Production-Segment-100107
+  vn-segment 100107
+
+vlan 108
+  name Production-Segment-100108
+  vn-segment 100108
+
+vlan 109
+  name Production-Segment-100109
+  vn-segment 100109
+
+vlan 110
+  name Production-Segment-100110
+  vn-segment 100110
+
+vlan 111
+  name Production-Segment-100111
+  vn-segment 100111
+
+vlan 112
+  name Production-Segment-100112
+  vn-segment 100112
+
+vlan 113
+  name Production-Segment-100113
+  vn-segment 100113
+
+vlan 114
+  name Production-Segment-100114
+  vn-segment 100114
+
+vlan 115
+  name Production-Segment-100115
+  vn-segment 100115
+
+vlan 116
+  name Production-Segment-100116
+  vn-segment 100116
+
+vlan 117
+  name Production-Segment-100117
+  vn-segment 100117
+
+vlan 118
+  name Production-Segment-100118
+  vn-segment 100118
+
+vlan 119
+  name Production-Segment-100119
+  vn-segment 100119
+
+vlan 120
+  name Production-Segment-100120
+  vn-segment 100120

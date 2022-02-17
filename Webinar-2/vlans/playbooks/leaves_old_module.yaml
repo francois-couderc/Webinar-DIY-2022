@@ -1,0 +1,17 @@
+---
+- name: Leaves underlay configuration
+  hosts: Leaves
+  gather_facts: false 
+  tasks:
+
+  - name: Create VLAN/L2VNI
+    nxos_vlan:
+      vlan_id: "{{ item.VLAN }}"
+      name: "{{ item.name }}"
+      mapped_vni: "{{ item.VNI }}"
+      admin_state: up
+    loop: "{{ L2VNIs }}"
+    loop_control:
+      loop_var: item
+      label: "{{ item['VLAN'] }}" 
+    when: L2VNIs is defined

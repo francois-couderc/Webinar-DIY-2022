@@ -1,0 +1,37 @@
+---
+- name: Leaves underlay configuration
+  hosts: Leaves
+  gather_facts: false 
+  tasks:
+
+
+    - name: VLANs - vlans list for initialization
+      set_fact:
+        VLANs_list: [{'vlan_id': 1, 'name': 'default'}]
+
+    - name: VLANs - add L2VNIs VLANs
+      set_fact:
+        VLANs_list: "{{ VLANs_list
+                      + [{
+                        'vlan_id'       : item.VLAN,
+                        'name'          : item.name,
+                        'mapped_vni'    : item.VNI
+                        }] }}"
+      loop: "{{ L2VNIs }}"
+      loop_control:
+        loop_var: item
+        label: "{{ item['VLAN'] }}" 
+      when: L2VNIs is defined
+
+    - name: debug
+      debug:
+        msg: "{{ VLANs_list }}"
+
+    - name: VLANS - global configuration in overridden mode
+      cisco.nxos.nxos_vlans:
+        config: "{{ VLANs_list }}"
+        state: merged
+
+
+
+

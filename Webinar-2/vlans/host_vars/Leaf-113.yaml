@@ -1,0 +1,72 @@
+loopback_interfaces:
+  - {port: "loopback0", IP: "1.1.1.111", description: "*** Router ID ****"}
+  - {port: "loopback1", IP: "1.0.0.111", description: "*** VTEP IP address ***"}
+
+fabric_interfaces:
+  - {port: "Ethernet1/51", IP: "1.11.111.111", mask: "24", description: "*** To Spine-11 - e1/1 ***"}
+  - {port: "Ethernet1/52", IP: "1.12.111.111", mask: "24", description: "*** To Spine-12 - e1/1 ***"}
+
+VPC:
+  domain: 110
+  anycast_VPC_VTEP: "1.0.0.110"
+  priority: 4096
+  peer_keepalive_destination_IP: "192.168.123.112"
+  peer_link_interfaces:
+    - {port: "Ethernet1/50", description: "*** to Leaf-112 - e1/50 ***"}
+  backup_routing_path: {VLAN: 3600, IP: "1.110.0.111", mask: "24", description: "*** Backup underlay routing path through VPC peer-link ***"}
+
+
+L3VNIs:
+  - {name : Production, VNI: 100100, VLAN: 100}
+
+L2VNIs:
+  - {name : Production-Segment-100101, VNI: 100101, VLAN: 101, IP: 10.101.0.254/24, VRF: Production"}
+  - {name : Production-Segment-100102, VNI: 100102, VLAN: 102, IP: 10.102.0.254/24, VRF: Production"}
+  - {name : Production-Segment-100103, VNI: 100103, VLAN: 103, IP: 10.103.0.254/24, VRF: Production"}
+  - {name : Production-Segment-100104, VNI: 100104, VLAN: 104, IP: 10.104.0.254/24, VRF: Production"}
+  - {name : Production-Segment-100105, VNI: 100105, VLAN: 105, IP: 10.105.0.254/24, VRF: Production"}
+  - {name : Production-Segment-100106, VNI: 100106, VLAN: 106, IP: 10.106.0.254/24, VRF: Production"}
+  - {name : Production-Segment-100107, VNI: 100107, VLAN: 107, IP: 10.107.0.254/24, VRF: Production"}
+  - {name : Production-Segment-100108, VNI: 100108, VLAN: 108, IP: 10.108.0.254/24, VRF: Production"}
+  - {name : Production-Segment-100109, VNI: 100109, VLAN: 109, IP: 10.109.0.254/24, VRF: Production"}
+  - {name : Production-Segment-100110, VNI: 100110, VLAN: 9110, IP: 10.110.0.254/24, VRF: Production"}
+  - {name : Production-Segment-100111, VNI: 100111, VLAN: 111, IP: 10.111.0.254/24, VRF: Production"}
+  - {name : Production-Segment-100112, VNI: 100112, VLAN: 112, IP: 10.112.0.254/24, VRF: Production"}
+  - {name : Production-Segment-100113, VNI: 100113, VLAN: 113, IP: 10.113.0.254/24, VRF: Production"}
+  - {name : Production-Segment-100114, VNI: 100114, VLAN: 114, IP: 10.114.0.254/24, VRF: Production"}
+  - {name : Production-Segment-100115, VNI: 100115, VLAN: 115, IP: 10.115.0.254/24, VRF: Production"}
+  - {name : Production-Segment-100116, VNI: 100116, VLAN: 116, IP: 10.116.0.254/24, VRF: Production"}
+  - {name : Production-Segment-100117, VNI: 100117, VLAN: 117, IP: 10.117.0.254/24, VRF: Production"}
+  - {name : Production-Segment-100118, VNI: 100118, VLAN: 118, IP: 10.118.0.254/24, VRF: Production"}
+  - {name : Production-Segment-100119, VNI: 100119, VLAN: 119, IP: 10.119.0.254/24, VRF: Production"}
+  - {name : Production-Segment-100120, VNI: 100120, VLAN: 120, IP: 10.120.0.254/24, VRF: Production"}
+  # - {name : Production-Segment-100121, VNI: 100121, VLAN: 121, IP: 10.121.0.254/24, VRF: Production"}
+  # - {name : Production-Segment-100122, VNI: 100122, VLAN: 122, IP: 10.122.0.254/24, VRF: Production"}
+  # - {name : Production-Segment-100123, VNI: 100123, VLAN: 123, IP: 10.123.0.254/24, VRF: Production"}
+  # - {name : Production-Segment-100124, VNI: 100124, VLAN: 124, IP: 10.124.0.254/24, VRF: Production"}
+  # - {name : Production-Segment-100125, VNI: 100125, VLAN: 125, IP: 10.125.0.254/24, VRF: Production"}
+  # - {name : Production-Segment-100126, VNI: 100126, VLAN: 126, IP: 10.126.0.254/24, VRF: Production"}
+  # - {name : Production-Segment-100127, VNI: 100127, VLAN: 127, IP: 10.127.0.254/24, VRF: Production"}
+  # - {name : Production-Segment-100128, VNI: 100128, VLAN: 128, IP: 10.128.0.254/24, VRF: Production"}
+  # - {name : Production-Segment-100129, VNI: 100129, VLAN: 129, IP: 10.129.0.254/24, VRF: Production"}
+  # - {name : Production-Segment-100130, VNI: 100130, VLAN: 130, IP: 10.130.0.254/24, VRF: Production"}
+  # - {name : Production-Segment-100131, VNI: 100131, VLAN: 131, IP: 10.131.0.254/24, VRF: Production"}
+  # - {name : Production-Segment-100132, VNI: 100132, VLAN: 132, IP: 10.132.0.254/24, VRF: Production"}
+  # - {name : Production-Segment-100133, VNI: 100133, VLAN: 133, IP: 10.133.0.254/24, VRF: Production"}
+  # - {name : Production-Segment-100134, VNI: 100134, VLAN: 134, IP: 10.134.0.254/24, VRF: Production"}
+  # - {name : Production-Segment-100135, VNI: 100135, VLAN: 135, IP: 10.135.0.254/24, VRF: Production"}
+  # - {name : Production-Segment-100136, VNI: 100136, VLAN: 136, IP: 10.136.0.254/24, VRF: Production"}
+  # - {name : Production-Segment-100137, VNI: 100137, VLAN: 137, IP: 10.137.0.254/24, VRF: Production"}
+  # - {name : Production-Segment-100138, VNI: 100138, VLAN: 138, IP: 10.138.0.254/24, VRF: Production"}
+  # - {name : Production-Segment-100139, VNI: 100139, VLAN: 139, IP: 10.139.0.254/24, VRF: Production"}
+  # - {name : Production-Segment-100140, VNI: 100140, VLAN: 140, IP: 10.140.0.254/24, VRF: Production"}
+  # - {name : Production-Segment-100141, VNI: 100141, VLAN: 141, IP: 10.141.0.254/24, VRF: Production"}
+  # - {name : Production-Segment-100142, VNI: 100142, VLAN: 142, IP: 10.142.0.254/24, VRF: Production"}
+  # - {name : Production-Segment-100143, VNI: 100143, VLAN: 143, IP: 10.143.0.254/24, VRF: Production"}
+  # - {name : Production-Segment-100144, VNI: 100144, VLAN: 144, IP: 10.144.0.254/24, VRF: Production"}
+  # - {name : Production-Segment-100145, VNI: 100145, VLAN: 145, IP: 10.145.0.254/24, VRF: Production"}
+  # - {name : Production-Segment-100146, VNI: 100146, VLAN: 146, IP: 10.146.0.254/24, VRF: Production"}
+  # - {name : Production-Segment-100147, VNI: 100147, VLAN: 147, IP: 10.147.0.254/24, VRF: Production"}
+  # - {name : Production-Segment-100148, VNI: 100148, VLAN: 148, IP: 10.148.0.254/24, VRF: Production"}
+  # - {name : Production-Segment-100149, VNI: 100149, VLAN: 149, IP: 10.149.0.254/24, VRF: Production"}
+  # - {name : Production-Segment-100150, VNI: 100150, VLAN: 150, IP: 10.150.0.254/24, VRF: Production"}

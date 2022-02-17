@@ -1,0 +1,6 @@
+{% for L2VNI in L2VNIs %}
+
+vlan {{ L2VNI.VLAN }}
+  name {{ L2VNI.name }}
+  vn-segment {{ L2VNI.VNI }}
+{% endfor %}

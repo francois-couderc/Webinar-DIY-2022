@@ -1,0 +1,20 @@
+all:
+  vars:
+    ansible_connection: network_cli
+    ansible_network_os: nxos
+    ansible_ssh_user: admin
+    ansible_host: 10.60.9.123
+    ansible_ssh_private_key_file: /home/labuser/.ssh/SSH-key
+    ansible_python_interpreter: auto_silent
+
+  hosts:
+    Leaf-113:
+      ansible_port: 10115
+  children:
+    Leaves:
+      hosts:
+        Leaf-113:
+    Switches:
+      children:
+        Leaves:
+

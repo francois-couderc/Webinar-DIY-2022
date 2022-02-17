@@ -1,0 +1,15 @@
+---
+- name: Leaves underlay configuration
+  hosts: Leaves
+  gather_facts: false 
+  tasks:
+
+  - name: Create configuration file to push
+    template:
+      src: "../CLI templates/leaves.j2"
+      dest: "CLI configs/{{ inventory_hostname }}.txt"
+
+  - name: Push configuration file to switch
+    nxos_config:  
+      src: "../CLI configs/{{ inventory_hostname }}.txt"
+      save_when: never
