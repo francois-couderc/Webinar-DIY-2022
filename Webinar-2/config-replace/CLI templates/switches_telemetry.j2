@@ -1,0 +1,29 @@
+feature telemetry
+
+telemetry
+  destination-profile
+    use-vrf management
+  destination-group 1
+    ip address {{ telegraf_server }} port {{ telegraf_port }} protocol gRPC encoding GPB
+  sensor-group 1
+    data-source DME
+    path sys/bgp/inst depth unbounded
+  sensor-group 2
+    data-source NX-API
+    path "show bgp l2vpn evpn summary" depth unbounded
+    path "show environment power" depth unbounded
+    path "show environment temperature" depth 0
+    path "show interface status" depth unbounded
+    path "show mac address-table count" depth unbounded
+    path "show mac address-table dynamic" depth unbounded
+    path "show nve vni summary" depth unbounded
+    path "show system resources" depth unbounded
+    path "show version" depth unbounded
+  sensor-group 3
+    data-source DME
+    path sys/intf depth unbounded
+  subscription 1
+    dst-grp 1
+    snsr-grp 1 sample-interval 10000
+    snsr-grp 2 sample-interval 10000
+    snsr-grp 3 sample-interval 10000

@@ -1,0 +1,10 @@
+OOB_IP : 192.168.123.121/24
+OOB_gateway: 192.168.123.254
+
+loopback_interfaces:
+  - {port: "loopback0", IP: 1.1.1.11, description: "*** Router ID ****"}
+
+fabric_interfaces:
+  - {port: "Ethernet1/1", IP: "1.11.111.11", mask: "24", description: "*** To Leaf-111 - e1/51 ***"}
+  - {port: "Ethernet1/2", IP: "1.11.112.11", mask: "24", description: "*** To Leaf-112 - e1/51 ***"}
+  - {port: "Ethernet1/3", IP: "1.11.113.11", mask: "24", description: "*** To Leaf-113 - e1/51 ***"}

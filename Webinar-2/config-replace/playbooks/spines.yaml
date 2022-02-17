@@ -1,0 +1,41 @@
+---
+- name: Spines underlay configuration
+  hosts: Spines
+  gather_facts: no
+  tasks:
+
+  - name: Create configuration file to push
+    template:
+      src: "../CLI templates/spines.j2"
+      dest: "CLI configs/{{ inventory_hostname }}.txt"
+
+  # - name: Push configuration file to switch
+  #   nxos_config:  
+  #      src: "../CLI configs/{{ inventory_hostname }}.txt"
+  #      save_when: never
+
+  - name: Copy configuration file to bootflash
+    nxos_file_copy:
+      local_file: "CLI configs/{{ inventory_hostname }}.txt"
+      remote_file: "{{ inventory_hostname }}_latest_ansible_version.cfg"
+
+  - name: Replace running-config with configuration file
+    cisco.nxos.nxos_config:
+      replace_src: "{{ inventory_hostname }}_latest_ansible_version.cfg"
+      replace: config
+
+  - name: Config replace status
+    nxos_command:
+      commands:
+      - show config-replace status
+    register: result
+
+  - debug: var=result.stdout_lines
+
+  - name: Config replace logs
+    nxos_command:
+      commands:
+      - show config-replace log exec
+    register: result
+
+  - debug: var=result.stdout_lines

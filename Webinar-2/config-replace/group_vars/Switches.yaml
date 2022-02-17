@@ -1,0 +1,16 @@
+NXOS: nxos.9.3.8.bin
+NXOS_VERSION: 9.3(8)
+BIOS_VERSION: 05.44
+
+MTU: "9216"
+TCP_MSS: 8960
+
+NTP_server: 192.168.123.254
+
+local_ASN: 65001
+
+OSPF_name: underlay
+OSPF_area: 0.0.0.0
+
+telegraf_server: 192.168.123.245
+telegraf_port: 57000

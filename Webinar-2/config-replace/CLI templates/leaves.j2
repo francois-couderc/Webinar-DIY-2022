@@ -1,0 +1,137 @@
+feature lldp
+nv overlay evpn
+feature ospf
+feature bgp
+feature interface-vlan
+feature vn-segment-vlan-based
+feature nv overlay
+{% if VPC is defined %}
+feature vpc
+feature lacp
+{% endif %}
+
+ip tcp mss 8960
+
+logging level l2fm 5
+
+ntp server {{ NTP_server }} use-vrf management
+clock timezone CET 2 0
+
+system vlan long-name
+
+spanning-tree vlan 1-3967 priority 4096
+
+fabric forwarding anycast-gateway-mac {{ anycast_gateway_mac }}
+{% for loopback in loopback_interfaces %}
+
+interface {{ loopback.port }}
+  description {{ loopback.description}}
+  ip address {{ loopback.IP }}/32
+  ip router ospf {{ OSPF_name }} area {{ OSPF_area }}
+{% endfor %}
+{% if VPC is defined %}
+
+interface loopback1
+  ip address {{ VPC.anycast_VPC_VTEP }}/32 secondary
+
+vpc domain {{ VPC.domain }}
+  peer-switch
+  role priority {{ VPC.priority }}
+  peer-keepalive destination {{ VPC.peer_keepalive_destination_IP }}
+  auto-recovery reload-delay 360
+  delay restore 150
+  peer-gateway
+  layer3 peer-router
+  ip arp synchronize
+  fast-convergence
+
+interface port-channel1
+  description *** VPC peer-link ***
+  switchport
+  switchport mode trunk
+  spanning-tree port type network
+  vpc peer-link
+{% for interface in VPC.peer_link_interfaces %}
+
+interface {{ interface.port }}
+  description {{ interface.description}}
+  switchport
+  switchport mode trunk
+  channel-group 1 mode active
+  no shutdown
+{% endfor %}
+{% if VPC.infra_VPC_interfaces is defined %}
+{% for VPC_peer in VPC.infra_VPC_interfaces %}
+
+interface port-channel{{VPC_peer.VPC_id}}
+  description {{VPC_peer.description}}
+  mtu {{ MTU }}
+  switchport
+  switchport mode trunk
+  vpc {{VPC_peer.VPC_id}}
+  no shutdown
+{% for interface in VPC_peer.interfaces %}
+
+interface {{ interface.port }}
+  description {{ interface.description}}
+  channel-group {{VPC_peer.VPC_id}} force mode active
+  no shutdown
+{% endfor %}
+{% endfor %}
+{% endif %}
+
+vlan 1,{{ VPC.backup_routing_path.VLAN }}
+
+system nve infra-vlans {{ VPC.backup_routing_path.VLAN }}
+
+interface Vlan{{ VPC.backup_routing_path.VLAN }}
+  description {{ VPC.backup_routing_path.description }}
+  mtu {{ MTU }}
+  ip address {{ VPC.backup_routing_path.IP }}/{{  VPC.backup_routing_path.mask }}
+  no ip redirects
+  ip ospf network point-to-point
+  ip router ospf {{ OSPF_name }} area {{ OSPF_area }}
+  no shutdown
+{% endif %}
+
+interface nve1
+  no shutdown
+  host-reachability protocol bgp
+  global ingress-replication protocol bgp
+  source-interface loopback1
+{% if VPC is defined %}
+  source-interface hold-down-time 220
+  advertise virtual-rmac
+{% endif %}
+{% for fabric_interface in fabric_interfaces %}
+
+interface {{ fabric_interface.port }}
+  description {{ fabric_interface.description}}
+  mtu {{ MTU }}
+  ip address {{ fabric_interface.IP }}/{{ fabric_interface.mask }}
+  no ip redirects
+  ip ospf network point-to-point
+  ip router ospf {{ OSPF_name }} area {{ OSPF_area }}
+  no shutdown
+{% endfor %}
+
+router ospf {{ OSPF_name }}
+  router-id {{ loopback_interfaces[0].IP }}
+
+router bgp {{ local_ASN }}
+  router-id {{ loopback_interfaces[0].IP }}
+  log-neighbor-changes
+  address-family l2vpn evpn
+{% if VPC is defined %}
+    advertise-pip
+{% endif %}
+  template peer overlay_local_spines
+    remote-as {{ local_ASN }}
+    update-source loopback0
+    address-family l2vpn evpn
+      send-community
+      send-community extended
+{% for item in groups['Spines']|sort %}
+  neighbor {{ hostvars[item]['loopback_interfaces'][0]['IP'] }}
+    inherit peer overlay_local_spines
+{% endfor %}
