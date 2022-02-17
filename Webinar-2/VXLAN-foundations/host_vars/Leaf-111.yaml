@@ -1,0 +1,16 @@
+loopback_interfaces:
+  - {port: "loopback0", IP: "1.1.1.111", description: "*** Router ID ****"}
+  - {port: "loopback1", IP: "1.0.0.111", description: "*** VTEP IP address ***"}
+
+fabric_interfaces:
+  - {port: "Ethernet1/51", IP: "1.11.111.111", mask: "24", description: "*** To Spine-11 - e1/1 ***"}
+  - {port: "Ethernet1/52", IP: "1.12.111.111", mask: "24", description: "*** To Spine-12 - e1/1 ***"}
+
+VPC:
+  domain: 110
+  anycast_VPC_VTEP: "1.0.0.110"
+  priority: 4096
+  peer_keepalive_destination_IP: "192.168.123.112"
+  peer_link_interfaces:
+    - {port: "Ethernet1/50", description: "*** to Leaf-112 - e1/50 ***"}
+  backup_routing_path: {VLAN: 3600, IP: "1.110.0.111", mask: "24", description: "*** Backup underlay routing path through VPC peer-link ***"}

@@ -1,0 +1,71 @@
+nv overlay evpn
+feature ospf
+feature bgp
+feature lldp
+feature nv overlay
+feature scp-server
+
+logging level l2fm 5
+icam monitor scale
+
+no ip domain-lookup
+
+ip tcp mss 8960 
+
+ntp server 192.168.123.254 use-vrf management
+clock timezone CET 1 0
+
+system vlan long-name
+
+interface loopback0
+  description *** Router ID ****
+  ip address 1.1.1.11/32
+  ip router ospf underlay area 0.0.0.0
+
+interface Ethernet1/1
+  description *** To Leaf-111 - e1/51 ***
+  mtu 9216
+  ip address 1.11.111.11/24
+  no ip redirects
+  ip ospf network point-to-point
+  ip router ospf underlay area 0.0.0.0
+  no shutdown
+
+interface Ethernet1/2
+  description *** To Leaf-112 - e1/51 ***
+  mtu 9216
+  ip address 1.11.112.11/24
+  no ip redirects
+  ip ospf network point-to-point
+  ip router ospf underlay area 0.0.0.0
+  no shutdown
+
+interface Ethernet1/3
+  description *** To Leaf-113 - e1/51 ***
+  mtu 9216
+  ip address 1.11.113.11/24
+  no ip redirects
+  ip ospf network point-to-point
+  ip router ospf underlay area 0.0.0.0
+  no shutdown
+
+router ospf underlay
+  router-id 1.1.1.11
+
+router bgp 65001
+  router-id 1.1.1.11
+  log-neighbor-changes 
+  template peer overlay_local_leaves
+    remote-as 65001
+    update-source loopback0
+    address-family l2vpn evpn
+      send-community
+      send-community extended
+      route-reflector-client
+  neighbor 1.1.1.111
+    inherit peer overlay_local_leaves
+  neighbor 1.1.1.112
+    inherit peer overlay_local_leaves
+  neighbor 1.1.1.113
+    inherit peer overlay_local_leaves
+

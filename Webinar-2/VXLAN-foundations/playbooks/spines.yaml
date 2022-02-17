@@ -1,0 +1,15 @@
+---
+- name: Spines underlay configuration
+  hosts: Spines
+  gather_facts: no
+  tasks:
+
+  - name: Create configuration file to push
+    template:
+      src: "../CLI templates/spines.j2"
+      dest: "CLI configs/{{ inventory_hostname }}.txt"
+
+  - name: Push configuration file to switch
+    nxos_config:  
+       src: "../CLI configs/{{ inventory_hostname }}.txt"
+       save_when: never

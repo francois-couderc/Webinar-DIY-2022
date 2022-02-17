@@ -1,0 +1,15 @@
+---
+- name: Telemetry configuration
+  hosts: Switches
+  gather_facts: no
+  tasks:
+
+  - name: Create configuration file to push
+    template:
+      src: "../CLI templates/switches_telemetry.j2"
+      dest: "CLI configs/{{ inventory_hostname }}_telemetry.txt"
+
+  - name: Push configuration file to switch
+    nxos_config:  
+       src: "../CLI configs/{{ inventory_hostname }}_telemetry.txt"
+       save_when: never

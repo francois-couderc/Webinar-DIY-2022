@@ -1,0 +1,5 @@
+anycast_gateway_mac: 0001.0002.0003
+
+route_map_overlay_subnets: OVERLAY_LOCAL_SUBNETS
+tag_overlay_subnets: 12345
+

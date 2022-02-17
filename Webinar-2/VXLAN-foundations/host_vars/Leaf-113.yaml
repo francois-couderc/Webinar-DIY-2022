@@ -1,0 +1,7 @@
+loopback_interfaces:
+  - {port: "loopback0", IP: "1.1.1.113", description: "*** Router ID ****"}
+  - {port: "loopback1", IP: "1.0.0.113", description: "*** VTEP IP address ***"}
+
+fabric_interfaces:
+  - {port: "Ethernet1/51", IP: "1.11.113.113", mask: "24", description: "*** To Spine-11 - e1/3 ***"}
+  - {port: "Ethernet1/52", IP: "1.12.113.113", mask: "24", description: "*** To Spine-12 - e1/3 ***"}

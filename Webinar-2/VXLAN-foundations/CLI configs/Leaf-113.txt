@@ -1,0 +1,73 @@
+feature lldp
+nv overlay evpn
+feature ospf
+feature bgp
+feature interface-vlan
+feature vn-segment-vlan-based
+feature nv overlay
+feature scp-server
+
+ip tcp mss 8960
+
+logging level l2fm 5
+
+ntp server 192.168.123.254 use-vrf management
+clock timezone CET 2 0
+
+system vlan long-name
+
+spanning-tree vlan 1-3967 priority 4096
+
+fabric forwarding anycast-gateway-mac 0001.0002.0003
+
+interface loopback0
+  description *** Router ID ****
+  ip address 1.1.1.113/32
+  ip router ospf underlay area 0.0.0.0
+
+interface loopback1
+  description *** VTEP IP address ***
+  ip address 1.0.0.113/32
+  ip router ospf underlay area 0.0.0.0
+
+interface nve1
+  no shutdown
+  host-reachability protocol bgp
+  global ingress-replication protocol bgp
+  source-interface loopback1
+
+interface Ethernet1/51
+  description *** To Spine-11 - e1/3 ***
+  mtu 9216
+  ip address 1.11.113.113/24
+  no ip redirects
+  ip ospf network point-to-point
+  ip router ospf underlay area 0.0.0.0
+  no shutdown
+
+interface Ethernet1/52
+  description *** To Spine-12 - e1/3 ***
+  mtu 9216
+  ip address 1.12.113.113/24
+  no ip redirects
+  ip ospf network point-to-point
+  ip router ospf underlay area 0.0.0.0
+  no shutdown
+
+router ospf underlay
+  router-id 1.1.1.113
+
+router bgp 65001
+  router-id 1.1.1.113
+  log-neighbor-changes
+  address-family l2vpn evpn
+  template peer overlay_local_spines
+    remote-as 65001
+    update-source loopback0
+    address-family l2vpn evpn
+      send-community
+      send-community extended
+  neighbor 1.1.1.11
+    inherit peer overlay_local_spines
+  neighbor 1.1.1.12
+    inherit peer overlay_local_spines

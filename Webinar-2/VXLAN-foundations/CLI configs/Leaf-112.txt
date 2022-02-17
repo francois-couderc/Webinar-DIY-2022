@@ -1,0 +1,119 @@
+feature lldp
+nv overlay evpn
+feature ospf
+feature bgp
+feature interface-vlan
+feature vn-segment-vlan-based
+feature nv overlay
+feature scp-server
+feature vpc
+feature lacp
+
+ip tcp mss 8960
+
+logging level l2fm 5
+
+ntp server 192.168.123.254 use-vrf management
+clock timezone CET 2 0
+
+system vlan long-name
+
+spanning-tree vlan 1-3967 priority 4096
+
+fabric forwarding anycast-gateway-mac 0001.0002.0003
+
+interface loopback0
+  description *** Router ID ****
+  ip address 1.1.1.112/32
+  ip router ospf underlay area 0.0.0.0
+
+interface loopback1
+  description *** VTEP IP address ***
+  ip address 1.0.0.112/32
+  ip router ospf underlay area 0.0.0.0
+
+interface loopback1
+  ip address 1.0.0.110/32 secondary
+
+vpc domain 110
+  peer-switch
+  role priority 8192
+  peer-keepalive destination 192.168.123.111
+  auto-recovery reload-delay 360
+  delay restore 150
+  peer-gateway
+  layer3 peer-router
+  ip arp synchronize
+  fast-convergence
+
+interface port-channel1
+  description *** VPC peer-link ***
+  switchport
+  switchport mode trunk
+  spanning-tree port type network
+  vpc peer-link
+
+interface Ethernet1/50
+  description *** to Leaf-111 - e1/50 ***
+  switchport
+  switchport mode trunk
+  channel-group 1 mode active
+  no shutdown
+
+vlan 1,3600
+
+system nve infra-vlans 3600
+
+interface Vlan3600
+  description *** Backup underlay routing path through VPC peer-link ***
+  mtu 9216
+  ip address 1.110.0.112/24
+  no ip redirects
+  ip ospf network point-to-point
+  ip router ospf underlay area 0.0.0.0
+  no shutdown
+
+interface nve1
+  no shutdown
+  host-reachability protocol bgp
+  global ingress-replication protocol bgp
+  source-interface loopback1
+  source-interface hold-down-time 220
+  advertise virtual-rmac
+
+interface Ethernet1/51
+  description *** To Spine-11 - e1/2 ***
+  mtu 9216
+  ip address 1.11.112.112/24
+  no ip redirects
+  ip ospf network point-to-point
+  ip router ospf underlay area 0.0.0.0
+  no shutdown
+
+interface Ethernet1/52
+  description *** To Spine-12 - e1/2 ***
+  mtu 9216
+  ip address 1.12.112.112/24
+  no ip redirects
+  ip ospf network point-to-point
+  ip router ospf underlay area 0.0.0.0
+  no shutdown
+
+router ospf underlay
+  router-id 1.1.1.112
+
+router bgp 65001
+  router-id 1.1.1.112
+  log-neighbor-changes
+  address-family l2vpn evpn
+    advertise-pip
+  template peer overlay_local_spines
+    remote-as 65001
+    update-source loopback0
+    address-family l2vpn evpn
+      send-community
+      send-community extended
+  neighbor 1.1.1.11
+    inherit peer overlay_local_spines
+  neighbor 1.1.1.12
+    inherit peer overlay_local_spines
