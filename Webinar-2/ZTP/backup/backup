@@ -1,0 +1,25 @@
+#!/bin/bash
+
+directory=`date +%d-%m-%Y-%H:%M`
+
+mkdir $directory
+
+echo Leaf-111 backup ...
+ssh -q Leaf-111 "show run" > ./$directory/Leaf-111.cfg
+cp ./$directory/Leaf-111.cfg ./Leaf-111-latest-backup.cfg
+
+echo Leaf-112 backup ...
+ssh -q Leaf-112 "show run" > ./$directory/Leaf-112.cfg
+cp ./$directory/Leaf-112.cfg ./Leaf-112-latest-backup.cfg
+
+echo Leaf-113 backup ...
+ssh -q Leaf-113 "show run" > ./$directory/Leaf-113.cfg
+cp ./$directory/Leaf-113.cfg ./Leaf-113-latest-backup.cfg
+
+echo Spine-11 backup ...
+ssh -q Spine-11 "show run" > ./$directory/Spine-11.cfg
+cp ./$directory/Spine-11.cfg ./Spine-11-latest-backup.cfg
+
+echo Spine-12 backup ...
+ssh -q Spine-12 "show run" > ./$directory/Spine-12.cfg
+cp ./$directory/Spine-12.cfg ./Spine-12-latest-backup.cfg

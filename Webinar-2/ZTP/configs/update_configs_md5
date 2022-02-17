@@ -1,0 +1,8 @@
+#!/bin/bash
+
+rm *.md5
+
+for file in *cfg
+do
+  md5sum "$file" > "$file".md5
+done
