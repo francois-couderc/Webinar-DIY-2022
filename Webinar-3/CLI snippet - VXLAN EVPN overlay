@@ -1,0 +1,70 @@
+! L3VNI
+vlan 100
+  name Production-VRF
+  vn-segment 100000
+
+vrf context Production
+  vni 100000
+
+interface Vlan100
+  description *** Production VRF symmetric transit ***
+  no shutdown
+  mtu 9216
+  vrf member Production
+  no ip redirects
+  ip forward
+
+interface nve1
+  member vni 100000 associate-vrf
+
+router bgp 65001
+  vrf Production
+    address-family ipv4 unicast
+      advertise l2vpn evpn
+      maximum-paths ibgp 2
+
+! L2VNI
+
+vlan 101
+  name Production-servers-100101
+  vn-segment 100101
+
+interface Vlan101
+  description *** Production-servers-100101 L2VNI ***
+  no shutdown
+  mtu 9216
+  vrf member Production
+  no ip redirects
+  ip address 10.101.0.254/24
+  fabric forwarding mode anycast-gateway
+
+interface nve1
+  member vni 100101
+
+! VPC PO
+
+interface port-channel1031
+  description *** To ESX-1 ***
+  switchport
+  switchport mode trunk
+  switchport trunk allowed vlan 101
+  spanning-tree port type edge trunk
+  mtu 9216
+  vpc 1031
+  no shutdown
+
+interface Ethernet1/31
+  description *** To ESX-1 ***
+  switchport
+  channel-group 1031 force mode active
+  no shutdown
+
+! switchport trunk interface
+interface Ethernet1/1
+  description *** To ESX-4 ***
+  switchport
+  switchport mode trunk
+  switchport trunk allowed vlan 101
+  spanning-tree port type edge trunk
+  mtu 9216
+  no shutdown
