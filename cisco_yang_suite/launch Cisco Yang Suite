@@ -1,8 +1,0 @@
-https://developer.cisco.com/yangsuite/
-
-https://github.com/CiscoDevNet/yangsuite
-
-
-labuser@docker:~/yangsuite/docker$ pwd
-/home/labuser/yangsuite/docker
-labuser@docker:~/yangsuite/docker$ sudo docker-compose up
