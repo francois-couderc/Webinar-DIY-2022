@@ -1,0 +1,101 @@
+# Global tags can be specified here in key="value" format.
+[global_tags]
+
+# Configuration for telegraf agent
+[agent]
+  interval = "10s"
+  round_interval = true
+  metric_batch_size = 1000
+  metric_buffer_limit = 10000
+  collection_jitter = "0s"
+  flush_interval = "10s"
+  flush_jitter = "0s"
+  precision = ""
+  hostname = ""
+  omit_hostname = false
+  # debug = false
+  # quiet = false
+
+###############################################################################
+#                            OUTPUT PLUGINS                                   #
+###############################################################################
+
+# Configuration for sending metrics to InfluxDB
+[[outputs.influxdb]]
+  ## The target database for metrics; will be created as needed.
+  ## For UDP url endpoint database needs to be configured on server side.
+  database = "telegraf"
+
+  ## HTTP Basic Auth
+  username = "telegraf"
+  password = "cisco123"
+
+
+###############################################################################
+#                            INPUT PLUGINS                                    #
+###############################################################################
+
+# Read metrics about cpu usage
+[[inputs.cpu]]
+  ## Whether to report per-cpu stats or not
+  percpu = true
+  ## Whether to report total system cpu stats or not
+  totalcpu = true
+  ## If true, collect raw CPU time metrics
+  collect_cpu_time = false
+  ## If true, compute and report the sum of all non-idle CPU states
+  report_active = false
+
+# Read metrics about disk usage by mount point
+[[inputs.disk]]
+  ## Ignore mount points by filesystem type.
+  ignore_fs = ["tmpfs", "devtmpfs", "devfs", "iso9660", "overlay", "aufs", "squashfs"]
+
+# Read metrics about disk IO by device
+[[inputs.diskio]]
+
+# Get kernel statistics from /proc/stat
+[[inputs.kernel]]
+
+# Read metrics about memory usage
+[[inputs.mem]]
+
+# Get the number of processes and group them by status
+[[inputs.processes]]
+
+# Read metrics about swap memory usage
+[[inputs.swap]]
+
+# Read metrics about system load & uptime
+[[inputs.system]]
+
+[[inputs.cisco_telemetry_mdt]]
+#  ## Telemetry transport can be "tcp" or "grpc".  TLS is only supported when using the grpc transport.
+ transport = "grpc"
+#
+#  ## Address and port to host telemetry listener
+ service_address = ":57000"
+#
+#  ## Enable TLS; grpc transport only.
+#  # tls_cert = "/etc/telegraf/cert.pem"
+#  # tls_key = "/etc/telegraf/key.pem"
+#
+#  ## Enable TLS client authentication and define allowed CA certificates; grpc transport only.
+#  # tls_allowed_cacerts = ["/etc/telegraf/clientca.pem"]
+#
+#  ## Define aliases to map telemetry encoding paths to simple measurement names
+#  [inputs.cisco_telemetry_mdt.aliases]
+
+[[processors.strings]]
+  [[processors.strings.replace]]
+    field = "actual_input"
+    old = " W"
+    new = ""
+  [[processors.strings.replace]]
+    field = "actual_out"
+    old = " W"
+    new = ""
+
+[[processors.converter]]
+  [processors.converter.fields]
+    integer = ["actual_*"]
